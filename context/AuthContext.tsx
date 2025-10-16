@@ -21,8 +21,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     // onAuthStateChange akan langsung terpanggil dengan sesi yang ada saat ini,
-    // sehingga tidak perlu memanggil getSession() secara terpisah.
-    // Ini menyederhanakan logika dan memastikan hanya ada satu sumber kebenaran untuk sesi.
+    // menyederhanakan logika dan memastikan hanya ada satu sumber kebenaran untuk sesi.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
         setSession(session);
     });
