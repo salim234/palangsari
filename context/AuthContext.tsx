@@ -20,14 +20,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    // onAuthStateChange akan langsung terpanggil dengan sesi yang ada saat ini,
-    // menyederhanakan logika dan memastikan hanya ada satu sumber kebenaran untuk sesi.
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // onAuthStateChange akan langsung terpanggil dengan sesi yang ada saat ini.
+    // Kode ini diubah menjadi lebih defensif untuk memastikan subscription selalu ditangani dengan benar.
+    const authSubscription = supabase.auth.onAuthStateChange((_event, session) => {
         setSession(session);
     });
 
     // Berhenti memantau ketika komponen di-unmount
-    return () => subscription.unsubscribe();
+    return () => {
+        authSubscription.data.subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, pass: string) => {
